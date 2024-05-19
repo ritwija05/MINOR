@@ -10,6 +10,8 @@ const AddReview = () => {
   const [selectedStar, setSelectedStar] = useState("");
   const [givenReview, setGivenReview] = useState("");
   const [reviews, setReviews] = useState([]);
+  const [latitude, setLatitude] = useState(""); // Added latitude state
+  const [longitude, setLongitude] = useState(""); // Added longitude state
   const navigate = useNavigate(); // Use useNavigate hook
 
   useEffect(() => {
@@ -45,6 +47,8 @@ const AddReview = () => {
       teacherName: selectedTeacher,
       rating: selectedStar,
       review: givenReview,
+      latitude, // Add latitude to review object
+      longitude, 
     };
 
     // Adding the new review to the reviews list
@@ -60,6 +64,8 @@ const AddReview = () => {
     setSelectedTeacher("");
     setSelectedStar("");
     setGivenReview("");
+    setLatitude(""); // Reset latitude
+    setLongitude(""); // Reset longitude
   };
 
   return (
@@ -69,125 +75,146 @@ const AddReview = () => {
       </h1>
 
       <div className="w-full bg-white p-2 sm:p-5 md:px-8 rounded-sm shadow-md flex flex-col items-center">
-        <div className="flex justify-between w-full px-4 sm:px-10">
-          {/* Button to redirect to Reviews component */}
-          <button
-  onClick={() => navigate("/home/reviews")}
-  className="bg-primary font-normal text-white text-sm sm:text-xl sm:px-3 sm:py-2 p-1 rounded-sm"
+      <div className="flex justify-between w-full px-4 sm:px-10">
+  {/* Button to redirect to Reviews component */}
+  <button
+    onClick={() => navigate("/home/reviews")}
+    className="bg-primary font-normal text-white text-sm sm:text-xl sm:px-3 sm:py-2 p-1 rounded-lg hover:bg-primary-dark transition duration-300"
+  >
+    View Accident Reports
+  </button>
+  <Link to="/home/addreview">
+    <button className="bg-primary font-normal text-white text-sm sm:text-xl sm:px-3 sm:py-2 p-1 rounded-lg hover:bg-primary-dark transition duration-300">
+      Report an Accident
+    </button>
+  </Link>
+  <Link to="/home/searchreview">
+    <button className="bg-primary font-normal text-white text-sm sm:text-xl sm:px-3 sm:py-2 p-1 rounded-lg hover:bg-primary-dark transition duration-300">
+      Search Reports
+    </button>
+  </Link>
+</div>
+
+<form
+  onSubmit={addReview}
+  className="w-full rounded-lg shadow-md p-4 sm:p-6 md:p-8 flex flex-col items-center"
 >
-  View Accident Reports
-</button>
-          <Link to="/home/addreview">
-            <button className="bg-primary font-normal text-white sm:text-xl sm:px-3 sm:py-2 text-sm p-1 rounded-sm">
-              Report an Accident
-            </button>
-          </Link>
-          <Link to="/home/searchreview">
-            <button className="bg-primary font-normal text-white sm:text-xl sm:px-3 sm:py-2 text-sm p-1 rounded-sm">
-              Search Reports
-            </button>
-          </Link>
-        </div>
-        <form
-          onSubmit={addReview}
-          className="w-full rounded-sm shadow-md  p-2 sm:p-4 md:p-5 flex flex-col items-center"
-        >
-          {/* Form Inputs */}
-          {/* College Name */}
-          <div className="w-full">
-            <label className="text-sm2 md:text-lg text-gray-800">
-              College Name :
-            </label>
-            <select
-              onChange={handleCollegeChange}
-              value={selectedCollege}
-              className="w-full block border border-gray-500 rounded-sm text-sm md:text-lg h-6 md:h-8 mb-2 mt-1 focus:outline-none"
-            >
-              <option value="">Select a college</option>
-              {collegeData.map((college) => (
-                <option value={college} key={college}>
-                  {college}
-                </option>
-              ))}
-            </select>
-          </div>
+  {/* Form Inputs */}
+  {/* College Name */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">College Name:</label>
+    <select
+      onChange={handleCollegeChange}
+      value={selectedCollege}
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+    >
+      <option value="">Select a college</option>
+      {collegeData.map((college) => (
+        <option value={college} key={college}>
+          {college}
+        </option>
+      ))}
+    </select>
+  </div>
 
-          {/* Department Name */}
-          <div className="w-full">
-            <label className="text-sm2 md:text-lg text-gray-800">
-              Department Name :
-            </label>
-            <select
-              onChange={handleDepartmentChange}
-              value={selectedDepartment}
-              className="w-full block border border-gray-500 rounded-sm text-sm md:text-lg h-6 md:h-8 mb-2 mt-1 focus:outline-none"
-            >
-              <option value="">Select a Department</option>
-              {selectedCollege &&
-                departmentData[selectedCollege].map((department) => (
-                  <option value={department} key={department}>
-                    {department}
-                  </option>
-                ))}
-            </select>
-          </div>
+  {/* Department Name */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Department Name:</label>
+    <select
+      onChange={handleDepartmentChange}
+      value={selectedDepartment}
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+    >
+      <option value="">Select a Department</option>
+      {selectedCollege &&
+        departmentData[selectedCollege].map((department) => (
+          <option value={department} key={department}>
+            {department}
+          </option>
+        ))}
+    </select>
+  </div>
 
-          {/* Teacher Name */}
-          <div className="w-full">
-            <label className="text-sm2 md:text-lg text-gray-800">
-              Student Name :
-            </label>
-            <input
-              className="w-full block border border-gray-500 rounded-sm text-sm md:text-lg h-6 md:h-8 mb-2 mt-1 px-1 focus:outline-none"
-              value={selectedTeacher}
-              onChange={handleInputChange(setSelectedTeacher)}
-            />
-          </div>
+  {/* Teacher Name */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Student Name:</label>
+    <input
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+      value={selectedTeacher}
+      onChange={handleInputChange(setSelectedTeacher)}
+    />
+  </div>
 
-          {/* Rating */}
-          <div className="w-full">
-            <label className="text-sm2 md:text-lg text-gray-800">Rating :</label>
-            <select
-              onChange={handleRatingChange}
-              value={selectedStar}
-              className="w-full block border border-gray-500 rounded-sm text-sm md:text-lg h-6 md:h-8 mb-2 mt-1 focus:outline-none"
-            >
-              <option value="">Give the star</option>
-              {rating.map((star) => (
-                <option value={star} key={star}>
-                  {star}
-                </option>
-              ))}
-            </select>
-          </div>
+  {/* Rating */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Rating:</label>
+    <select
+      onChange={handleRatingChange}
+      value={selectedStar}
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+    >
+      <option value="">Give the star</option>
+      {rating.map((star) => (
+        <option value={star} key={star}>
+          {star}
+        </option>
+      ))}
+    </select>
+  </div>
 
-          {/* Review */}
-          <div className="w-full">
-            <label className="text-sm2 md:text-lg text-gray-800">
-              Enter The Details :
-            </label>
-            <textarea
-              className="w-full block border border-gray-500 rounded-sm text-lg h-20 mb-2 mt-1 p-2 focus:outline-none"
-              value={givenReview}
-              onChange={handleInputChange(setGivenReview)}
-            />
-          </div>
+  {/* Latitude */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Latitude:</label>
+    <input
+      type="text"
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+      value={latitude}
+      onChange={(e) => setLatitude(e.target.value)}
+    />
+  </div>
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="bg-primary font-normal text-white text-sm sm:text-xl sm:px-3 sm:py-2 px-2 py-1 rounded-sm"
-          >
-            Submit
-          </button>
-        </form>
+  {/* Longitude */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Longitude:</label>
+    <input
+      type="text"
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none"
+      value={longitude}
+      onChange={(e) => setLongitude(e.target.value)}
+    />
+  </div>
+
+  {/* Review */}
+  <div className="w-full mb-4">
+    <label className="text-lg text-gray-800 font-semibold mb-1">Enter The Details:</label>
+    <textarea
+      className="w-full bg-gray-100 border border-gray-400 rounded-lg py-2 px-4 text-lg focus:outline-none resize-none"
+      value={givenReview}
+      onChange={handleInputChange(setGivenReview)}
+      rows={6}
+    />
+  </div>
+
+  {/* Submit Button */}
+  <button
+    type="submit"
+    className="bg-primary font-normal text-white text-lg py-2 px-6 rounded-lg hover:bg-primary-dark transition duration-300"
+  >
+    Submit
+  </button>
+</form>
+
+
 
         {/* Display Reviews */}
-        <div className="w-full rounded-sm shadow-md mt-5 p-2 sm:p-4 flex flex-col gap-2 sm:gap-4">
-          {reviews.map((review, index) => (
-            <Review key={index} data={review} />
-          ))}
-        </div>
+        <div className="w-full border rounded-lg shadow-md mt-5 p-2 sm:p-4">
+  {reviews.map((review, index) => (
+    <div key={index} className="border-b py-4">
+      <Review data={review} />
+    </div>
+  ))}
+</div>
+
       </div>
     </div>
   );

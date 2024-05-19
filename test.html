@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Google Maps API Test</title>
+</head>
+<body>
+  <div id="map" style="height: 400px;"></div>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC1pl6OD_46WdyZLz57BJ2dcK1X2fn5d24&callback=initMap"></script>
+  <script>
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+
+
